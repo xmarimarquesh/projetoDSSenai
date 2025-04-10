@@ -1,7 +1,6 @@
-import express from 'express';
-import initRoutes from './src/routes/routes.ts'
-import cors from 'cors'
 import { WebSocketServer } from "ws";
+
+// npm install node-fetch
 
 const wss = new WebSocketServer({ port: 3000, host: "0.0.0.0" });
 
@@ -16,12 +15,27 @@ wss.on("connection", (ws) => {
         client.send(message.toString());
       }
     });
+
+    try{
+      const response = await fetch('http://localhost:4000/mensagens', { // ju aqui é o link que esá funcionando no routes
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mensagem: message.toString() }) // ju, aqui ele manda o rep.body
+      });
+
+      const data = await response.json();
+      console.log("📨 Enviado para HTTP com sucesso:", data);
+    } catch (error) {
+      console.error("❌ Erro ao enviar para HTTP:", error);
+    }
+
   });
 
   ws.on("close", () => console.log("🔴 Cliente desconectado"));
 });
 
 console.log("🚀 Servidor WebSocket rodando na porta 3000...");
+
 
 
 const app = express();

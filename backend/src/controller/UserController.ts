@@ -1,8 +1,5 @@
-// src/controllers/userController.ts
 import { Request, Response } from 'express';
 import { UserService } from '../services/userService.ts';
-import jwt from "jsonwebtoken";
-import crypto from "crypto-js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -16,7 +13,8 @@ class UserController {
             const user = await UserService.createUser(name, email, username, password);
             res.status(201).json(user);
         } catch (error) {
-            res.status(400).json({ message: 'Erro ao criar usuário', error });
+            const err = error as Error;
+            res.status(400).json({ message: err.message });
         }
     }
 
@@ -24,28 +22,11 @@ class UserController {
         const { email, password } = req.body;
 
         try {
-            const user = await UserService.findUserByEmail(email);
-
-            if (user) {
-
-                const bytes = crypto.AES.decrypt(user.password, process.env.SECRET as string);
-                const passwordDecrypted = bytes.toString(crypto.enc.Utf8);
-
-                if (password !== passwordDecrypted) {
-                    res.status(400).json({ message: "Senha inválida" });
-                }
-
-                const token = jwt.sign({ id: user.id }, process.env.SECRET as string, {
-                    expiresIn: '2 days'
-                });
-
-                res.status(200).json({ token });
-            }
-
-            res.status(400).json({ message: "Email inválido" });
-
+            const result = await UserService.login(email, password);
+            res.status(200).json(result);
         } catch (error) {
-            res.status(500).json({ message: "Erro interno", error });
+            const err = error as Error;
+            res.status(400).json({ message: err.message });
         }
     }
 }

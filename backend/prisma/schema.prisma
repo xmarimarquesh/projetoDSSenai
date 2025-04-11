@@ -62,6 +62,7 @@ model Post {
   id       Int     @id @default(autoincrement())
   legenda  String
   userId   Int
+  foto String?
   user     User    @relation(fields: [userId], references: [id])
   likes    Likes[]
   comment Comment[]

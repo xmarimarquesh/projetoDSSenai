@@ -1,4 +1,3 @@
-// src/services/userService.ts
 import { prisma } from '../lib/prisma.ts';
 import crypto from "crypto-js";
 

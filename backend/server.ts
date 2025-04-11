@@ -17,10 +17,10 @@ wss.on("connection", (ws) => {
     });
 
     try{
-      const response = await fetch('http://localhost:4000/mensagens', { // ju aqui é o link que esá funcionando no routes
+      const response = await fetch('http://localhost:4000/mensagens/', { // ju aqui é o link que esá funcionando no routes
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mensagem: message.toString() }) // ju, aqui ele manda o rep.body
+        body: JSON.stringify({ mensagem: message.toString()  }) // ju, aqui ele manda o rep.body
       });
 
       const data = await response.json();

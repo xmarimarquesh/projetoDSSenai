@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma.ts';
 import crypto from "crypto-js";
 
 export class UserService {
-  static async createUser(name: string, email: string, username: string, password: string) {
+  static async createUser(name: string, email: string, username: string, password: string, fotoPerfil: string, capaPerfil: string) {
     const passwordCrypt = crypto.AES.encrypt(password, process.env.SECRET as string).toString();
 
     const user = await prisma.user.create({
@@ -11,7 +11,9 @@ export class UserService {
         name,
         email,
         username,
-        password: passwordCrypt
+        password: passwordCrypt,
+        fotoPerfil,
+        capaPerfil,
       }
     });
 

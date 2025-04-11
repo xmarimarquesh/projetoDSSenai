@@ -10,41 +10,89 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   name      String
-  email     String    @unique
-  username  String    @unique
+  username  String      @unique
+  email     String      @unique
   password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  fotoPerfil String
+  capaPerfil String 
 
   posts     Post[]
-  comments  Comment[]
+  likes     Likes[]
+  comment Comment[]
+  conexoes1 Conexao[]   @relation("ConexoesUsuario1")
+  conexoes2 Conexao[]   @relation("ConexoesUsuario2")
+  mensagensEnviadas Mensagem[] @relation("MensagensEnviadas")
+  mensagensRecebidas Mensagem[] @relation("MensagensRecebidas")
+  solicitacoesEnviadas   SolicitacaoAmizade[] @relation("SolicitacoesEnviadas")
+  solicitacoesRecebidas  SolicitacaoAmizade[] @relation("SolicitacoesRecebidas")
+}
+
+model Conexao {
+  
+  id         Int    @id @default(autoincrement())
+  usuario1Id Int
+  usuario2Id Int
+
+  usuario1   User   @relation("ConexoesUsuario1", fields: [usuario1Id], references: [id])
+  usuario2   User   @relation("ConexoesUsuario2", fields: [usuario2Id], references: [id])
+}
+
+model Mensagem {
+  id         Int    @id @default(autoincrement())
+  conteudo   String
+  enviadaEm  DateTime @default(now())
+  remetenteId Int
+  destinatarioId Int
+
+  remetente    User @relation("MensagensEnviadas", fields: [remetenteId], references: [id])
+  destinatario User @relation("MensagensRecebidas", fields: [destinatarioId], references: [id])
+}
+
+model Emocao {
+  id   Int    @id @default(autoincrement())
+  name String
+  foto String
 }
 
 model Post {
-  id        Int       @id @default(autoincrement())
-  title     String
-  content   String
-  imageUrl  String?   
-  published Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  userId    Int
-  user      User       @relation(fields: [userId], references: [id])
-  comments  Comment[]
+  id       Int     @id @default(autoincrement())
+  legenda  String
+  userId   Int
+  user     User    @relation(fields: [userId], references: [id])
+  likes    Likes[]
+  comment Comment[]
 }
 
+model Likes {
+
+  id      Int  @id @default(autoincrement())
+  userId  Int
+  postId  Int
+
+  user    User @relation(fields: [userId], references: [id])
+  post    Post @relation(fields: [postId], references: [id])
+}
 
 model Comment {
-  id        Int       @id @default(autoincrement())
-  content   String
-  createdAt DateTime  @default(now())
+  
+  id      Int  @id @default(autoincrement())
+  userId  Int
+  postId  Int
+  text String
 
-  postId    Int
-  userId    Int
+  user    User @relation(fields: [userId], references: [id])
+  post    Post @relation(fields: [postId], references: [id])
+}
 
-  post      Post      @relation(fields: [postId], references: [id])
-  user      User      @relation(fields: [userId], references: [id])
+model SolicitacaoAmizade {
+  id            Int      @id @default(autoincrement())
+  remetenteId   Int
+  destinatarioId Int
+  status        String   @default("pendente") // pode ser 'pendente', 'aceita', 'recusada'
+  criadaEm      DateTime @default(now())
+
+  remetente     User     @relation("SolicitacoesEnviadas", fields: [remetenteId], references: [id])
+  destinatario  User     @relation("SolicitacoesRecebidas", fields: [destinatarioId], references: [id])
 }

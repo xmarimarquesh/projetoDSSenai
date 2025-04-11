@@ -49,6 +49,14 @@ class UserController {
             res.status(500).json({ message: "Erro interno", error });
         }
     }
+
+    static async getProfile(req: Request, res: Response) {
+      const { id } = req.params;
+
+      const user = await prisma.user.findUnique({ where: { id } });
+
+      return user
+    }
 }
 
 export default UserController;

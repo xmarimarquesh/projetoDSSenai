@@ -1,40 +1,43 @@
-import { WebSocketServer } from "ws";
+import express from 'express';
+import initRoutes from './src/routes/routes.ts'
+// import connectDB from './src/database/database.ts'
+import cors from 'cors'
 
 // npm install node-fetch
 
-const wss = new WebSocketServer({ port: 3000, host: "0.0.0.0" });
+// const wss = new WebSocketServer({ port: 3000, host: "0.0.0.0" });
 
-wss.on("connection", (ws) => {
-  console.log("🟢 Novo cliente conectado!");
+// wss.on("connection", (ws) => {
+//   console.log("🟢 Novo cliente conectado!");
 
-  ws.on("message", (message) => {
-    console.log(`📩 Mensagem recebida: ${message}`);
+//   ws.on("message", (message) => {
+//     console.log(`📩 Mensagem recebida: ${message}`);
 
-    wss.clients.forEach((client) => {
-      if (client.readyState === 1) {
-        client.send(message.toString());
-      }
-    });
+//     wss.clients.forEach((client) => {
+//       if (client.readyState === 1) {
+//         client.send(message.toString());
+//       }
+//     });
 
-    try{
-      const response = await fetch('http://localhost:4000/mensagens', { // ju aqui é o link que esá funcionando no routes
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mensagem: message.toString() }) // ju, aqui ele manda o rep.body
-      });
+//     try{
+//       const response = await fetch('http://localhost:4000/mensagens', { // ju aqui é o link que esá funcionando no routes
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ mensagem: message.toString() }) // ju, aqui ele manda o rep.body
+//       });
 
-      const data = await response.json();
-      console.log("📨 Enviado para HTTP com sucesso:", data);
-    } catch (error) {
-      console.error("❌ Erro ao enviar para HTTP:", error);
-    }
+//       const data = await response.json();
+//       console.log("📨 Enviado para HTTP com sucesso:", data);
+//     } catch (error) {
+//       console.error("❌ Erro ao enviar para HTTP:", error);
+//     }
 
-  });
+//   });
 
-  ws.on("close", () => console.log("🔴 Cliente desconectado"));
-});
+//   ws.on("close", () => console.log("🔴 Cliente desconectado"));
+// });
 
-console.log("🚀 Servidor WebSocket rodando na porta 3000...");
+// console.log("🚀 Servidor WebSocket rodando na porta 3000...");
 
 
 
